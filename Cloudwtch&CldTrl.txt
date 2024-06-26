@@ -1,0 +1,56 @@
+CLOUDTRAIL----
+
+AWS Cloudtrail tracks events,WEBAPI and any changes made in AWS resources.:
+1>>Precisely who made the request?
+2>>What action perfomred?
+3>>What parameters being passed?
+4>>What is the end result?
+
+Cloutrail is most useful for troubleshooting:
+Suppose an EC2 instance is missing,then we need to find out how it got missing then we can go to Cloudtrail and find out
+Cloutrail delivers log files to S3(by default) or to cloudwatch
+Cloudtrail log files can be encrypted using AMAZON SSE
+Cloudtrail Log files can be archived using S3 Lifecycle groups
+
+How to create CloudTrail?
+Cloudtrail>>>Trails>>Create Trails---We can create Trails to deliver logs to S3 bucket(default) or even Cloudwatch Logs
+Name the Cloudtrail>>>Cloose whether multiregion Trail or Single region trail
+Then we have to choose what events we have to write---readOnly or Both ReadnWrite
+Another thing we have to configure is Data Events:We can track resource events tats performed on or withing the Resource
+Eg:We can track if Object is being added or deleted from S3
+Next we have to choose the s3 bucket where we want to send all the informations
+
+
+
+
+CLOUDWATCH------
+
+AWS CLOUDWATCH is a monitoring and obvervability service.
+AWS CLOUDWATCH sends monitoring and operational data in various forms--in form of logs,metrics and events.
+AWS CLOUWATCH can be used to set alarms,visualise cloudwatch,take immediate actions on the basis of alarms and evens.
+
+We can create AWS CLOUDWATCH alarms based on various metrics--
+Ec2 CPU utilization
+SQS queue length
+We can create Amazon CLOUDWATCH Dashboard with auto Refreshed Graphs and add all the important Cloudwatch metrics to it:
+we open the cloudwatchthere is dashboard option,nae it and create dashboard.
+In here we can add the type of metrics,we can select line metrics
+In here we can choose which metrics we want to select,lets pick up Lambda metrics and we have to pick up a Resource 
+
+Amazon CLOUDWATCH Events enables us to take immediate action on AWS Resource:
+We can call a LAMBDA function once the EC2 instance starts
+We notify Amazon SNS when an Autoscaling event happens
+
+
+CLOUDWATCH VS CLOUDTRAIL----------
+
+CLOUDWATCH is the inner working of an application
+Cloudtrail is used when we want to know which user or resource did which API actions:
+who created the s3 bucket
+who changed the concurrency settings of a lambda function
+
+CLOUDWATCH IS FOR MONITOR AND LOGGING OF INTERNAL WORKINGS OF AN APPLICATION
+CLOUDTRAIL IS TO TRACK  ALL API ACTIVITIED IN THE ACCOUNT
+
+
+
