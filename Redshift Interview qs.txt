@@ -1,0 +1,92 @@
+1	Redshift and its architecture.                                                     
+2	Disadvantages in Redshift
+3	OLAP / OLTP 
+4	Previous experience in redshift ? Project Flow
+5	Tables / Schemas / Views / Stroed Procedures / Functions.?
+6	Admin Roles and Responsibilities.?
+7	Create User / Group / Table / View etc.
+8	Granting and Restricting User / Group Permissions / Previleges 
+9	System Tables and Uses (senerio based)
+10	Query Optimization Technique in Redshift
+11	Cluster Types in Redshift 
+12	Distribution Styles
+13	Sorting Techniques
+14	WLM Configurations / QMR Rules 
+15	Catalogue Bloats 
+16	Vacuum & Analyze
+17	Blocking / Waiting / Planning / Run time of queries on cluster
+18	External /Spectrum table in Redshift
+19	Copy from DB to DB / Table to Table.
+20	Managing Group Access.
+21	Analysis on long running / Blocked queries.
+22	Backup and Recovery Plans and Strategy 
+23	Create Snapshot / Recover from snapshot
+24	Unload / Copy Command 
+25	Simple Admin queries 
+26	User activity log / connection logs 
+27	Manifest file
+28	materialized views in Redshift
+29	Copy command
+30	Encoding techniques in Redshift
+31	Lambda time limit
+32	Concurrancy in Lambda
+33	Invocation type and use cases
+34	Lambda Vs EC2
+35	How to check Lambda Logs(lambda or cloudwatch logs)
+36	S3 storage classes
+37	S3 lifecycle rule and use case
+38	S3 encryption types
+39	S3 ACL and IAM role
+40	When use S3 put notification(lambda) and S3-SNS
+41	Athena
+42	How to optimize queries in Athena
+43	Federated query
+44	Crawler(Glue)
+45	Data catalog
+46	Glue vs EMR
+47	Triggers in Glue
+48	Cloudwatch Vs Cloudtrail
+49	Cloudwatch dashboard
+50	How to create cloudtrail
+51	What is stored procedure and explain with any use case?
+52	Primary key Vs Foreign key
+
+
+
+
+
+
+
+S.No	Question
+1	Recent Project Detail description architectural wise as technical depth will be asked.
+2	Tools and Technolgies used in your project ? And why ?
+3	Challenges you faced in your project and how you overcome from them ?
+4	Explain Spark Architecture and what happens on the background when we do spark submit?
+5	Functioning of Resource Manager and Yarn ?
+6	How Spark is Fault Tolerant ?
+7	Catalyst optimizer
+8	Repartition and Coalecse in Details
+9	Caching in Spark
+10	Broadcast Join and Accumulators
+11	Questions will be asked on different types of transformations like reducebykey,orderbykey etc wide and narrow transformation.
+12	Why out of Memory Error occur in Spark ?
+13	Performance Tuning and Optimzation techniques in Spark in Detail
+14	Different Engines in Hive
+15	External Tables and Internal Tables and Temporary Tables in Hive
+16	Partioning and Bucketing 
+17	What happens when two person access the same table in Hive
+18	Difference between list and tuple
+19	Decorators in Python 
+20	Genrators in Python 
+21	They ask you to write some suedo code based on some scnarios and will ask to some small code
+22	Can Ask some question on SQL like to write some query
+23	Lambda in AWS ,how we configure it and how we pass configuration what is lambda layers ?
+24	Difference between Glue and Lambda where we can use each and their limitation 
+24	S3 Object Life Cycle
+25	EMR architecture and use?
+26	Athena and why it is used
+27	Redshift and its architecture 
+28	How to Load Data in Redshift
+29	External /Spectrum table in Redshift
+30	Query Optimization technique in Redshift
+31	Wofkflow Managemnet In redshift and AQUA
