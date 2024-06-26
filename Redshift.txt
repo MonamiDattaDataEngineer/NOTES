@@ -1,0 +1,207 @@
+REDSHIFT-------
+
+1>>>What is the need of another Database?
+RDS(mariadb,auroradb,postgresql,oracledb) is optomised for Online trabsaction Processing
+It is optimised to maintain a balance between reads and writes.
+OLAP has exponentially larger reads than writes on the database
+How about using diff approach to build a database
+How about creating a cluster and distributing execution of th query among the nodes.
+
+REDSHIFT IS A PETABYTE-SCALE DISTRIBUTED DATA WAREHOUSE BASED ON POSTGRESQL
+Characteristics-
+A)Massively Parallel Processing(MPP)---Storage and Processing are splitted among the nodes
+B)Columnar storage
+C)High Compression
+
+
+2)What are SYSTEM TABLES?USE CASES--------
+
+System tables in Redshift stores all the metadaata and operational infos about the cluter and its usage.
+USECASE:>>>>>
+While moving the data from s3 to Redshift there was an error coming----REDSHIFT SPECTRUM ERROR
+I checked by joining two SYSTEM TABLES----
+STL_LOAD_ERROR(stores error info occured during DATA LOADING) and
+S3_LOG(gives infos about start
+and end time of s3 ops,type of ops,s3 bucket ,key involved)
+
+select
+	sle.*
+	,s3_log.message AS full_msg
+from stl_load_errors sle
+LEFT OUTER JOIN svl_s3log s3_log
+	ON s3_log.query = sle.query
+order by starttime desc
+
+I got all the recent errors
+
+3>>Name few imp System Tables?-----------
+
+SVV_TABLE_INFO->>provides infos about tables in the cluster like schema,size,sort keys etc.Useful for analysing table structure for optimising queries
+STL_QUERY->>logs infos about quesries executed in Redshift cluster like query text,start and end times,resource usage.Useful for query Perf. analysis
+
+
+4) How do you monitor query perf usisng this?
+also an example of real-time troubleshoot and optimisation?------------------
+
+SYS TBLS can be used for query perf by analysing - QUERY EXEC TIME,RESOURCE USG,QUEUE WT TIME and other metrcics recorded in SYS TBL.
+In real time I used STL_QUERY & SVL_QUERY_SUMMARY tables to identify long running queries and optimise perf by adjstng DISTRIBUTN KEYS & SORT KEYS
+Also I used SVV_TBL_INFO to analyse tbl structures and optimise join operation
+
+
+5)REDSHIFT optimization technique?----------------------
+
+a) DISTRIBUTION STYLE>>>>> The data in a row is distributed among the nodes and by choosing proper distribution style(KEY,EVEN & ALL} one can 
+   minimize data movement during query execution and improve perfomance
+   EVEN(DEFAULT)---Data is uniformly distributed
+   KEY---Based on values of one column
+         Similar matching value columns are located close together.
+   ALL---Entire Tables on all nodes
+         Used for lookup tables 
+
+b)SORT KEYS>>>>>>>> In Redshift data is stored in sorted order.By creating the right SORT KEYS one can increase efficiency of the query.
+                    Suppose the frequently used column  range(year>1995 and <2005)--in this case We can create SORT KEY on column year.	
+
+c)COMPRESSION ENCODING>>>>>>>>> Using app COMPRESSION ENCODING one can reduce the storage and I/O overhead leading to faster query execution.
+                                Eg: RAW,BYTEDICT & LZO
+
+d) WORKLOAD MANAGEMENT >>>>>By configuring WLM queues and managing concurrency one can prevent the query contention and ensures consistent
+                            performance accross workloads.	
+   WLM>>>>>>>>>> Suppose we have long running low priority query and short running high priority query which might be waiting as long running 
+   queues is executed.WLM can be configured to prioritize the queues.Multiple queues with different concurrencies and different purposes can be
+   created.Once queue for l long running queries with low concurrency.One queue for short running query with high concurrency.
+
+e) MATERIALIZED VIEWS>>>>>>> Redshift supports MATERIALIZED VIEWS for pre-computing and storing aggregated data that can accelerate query
+   execution for complex queries.Redshift returns pre-computed results from MV without accessing the Base Tables.  They are useful where queries are 
+   PREDICTABLE AND REPEATED.
+   
+   
+   
+   
+6)GRANTING & RESTRICTING USER/GROUP PERMISSION/AND PRIVILEGES?---------
+
+GRANT>>>> Is used to give  access perission for Tables,Schema,Database,Procedures,Language or columns to an USER or a ROLE.  
+          Access options like-Read data in tables and Views,Create and Drop table
+		  Can only grant USAGE Permission on EXTERNL SCHEMA to DatabaseUsers and UserGroups using SYNTAX ON SCHEMA
+		  By using SYNTAX - ON EXTERNAL SCHEMA can grant or Revoke permissin to IAM (AWS Identity and Access Management )role
+		  Can Grant Execute access to Stored Procedures
+		  
+		  GRANT { { SELECT | INSERT | UPDATE | DELETE | DROP | REFERENCES | ALTER | TRUNCATE } [,...] | ALL [ PRIVILEGES ] }
+    ON { [ TABLE ] table_name [, ...] | ALL TABLES IN SCHEMA schema_name [, ...] }
+    TO { username [ WITH GRANT OPTION ] | ROLE role_name | GROUP group_name | PUBLIC } [, ...]
+	
+	GRANT ALL PRIVILEGES on ALL TABLES in SCHEMA schema_name TO user_name
+	GRANT SELECT,UPDATE ON TABLE T1 IN SCHEMA S1 TO USER USER_NAME
+
+
+7)HOW TO CREATE USER/GROUP/TABLE/VIEW ? ----------------------------
+
+USER----CREATE USER user_name WITH PASSWORD 'password';
+Grant persimmison to the user----GRANT SELECT ON ALL TABLES IN SCHEMA public TO user_name
+
+GROUP---- CREATE GROUP group_name
+If we wanna add user----ALTER GROUP group_name ADD USER user_name
+
+TABLE----CREATE TABLE employee(id , INT, first_name , VARCHAR(50) , last_nmame VARCHAR(50)	)
+         INSERT INTO TABLE employee (1 , 'ritesh' ,'datta', 2,'mimi','datta')
+		 
+VIEW ----CREATE VIEW EMPLOYEE_VIEW AS SELECT * FROM EMPLOYEE WHERE ID >2
+
+
+
+8)VACUUM & ANALYZER	?-----------------------------
+
+These 2 are query optimization technique of REDSHIFT.
+VACUUM-----VACUUM is used to RECLAIMS SPACE and RESORTS ROWS in tables to optmize the query execution.
+           It is mostly useful when rows are DELETED,UPDATED OR INSERTED.
+		   When Rows are DELETED Redshift doest release the space immediately but marks it available for reuse.When many spaces are accumulated then 
+		   VACUUM can be used that physically release the space
+		   VACUUM FULL/SORT BY table_name
+		   FULL---HEre Vacuum does a comprehensive operation on the entire table
+		   SORT BY--Here Vacuum resorts the rows that is it rearranges the rows to improve DATA DISTRIBUTION & performance.
+		   
+ANALYZE-----ANALYZE collects STATISTICS about DISTRIBUTION OF VALUES in TABLE COLUMNS.This info is used by QUERY OPTIMIZER to generate 
+            more efficient QUERY EXEC PLANS.	   
+            
+
+
+9) AMAZON REDSHIFT SPECTRUM / EXTERNAL TABLE ? --------------------------------
+
+AMAZON REDSHIFT SPECTRUM allows the data to be queried directly from s3 without having it loaded to REDSHIFT CLSTERS.
+Redhift uses the EXTERNAL TABLE to query the data directly.
+We define the Data Schema as the EXTERNAL TABLE in a DATA CATALOGUE like glue,Athena or Hive Metastore.
+For creating EXTERNAL TABLE IN EXT. SCHEMA one has to be the owner of the SCHEMA.
+ALTER SCHEMA ext_schema owner TO new_owner
+To RUN Spetrum Query ---2 permissions needed----
+		1) Usage Permission
+GRANT USAGE ON spectrum_schema to GROUP spectrumusers		
+		2)Permssion to CREATE TEMP TABLE in Current SCHEMA
+GRANT temp ON DATABASE spectrum_db ON GROUP spectrumusers		
+
+If we dont have ext schema we need to create EXT SCHEMA---
+CREATE EXTERNAL SCHEMA ext_schema FROM DATA CATALOGUE database 'schema_db'
+iam_role ''
+		
+
+
+
+10) REDSHIFT ARCHITECTURE? -----------------
+
+>> REDSHIFT is a petabyte scale distributed data warehouse system.It consists of -->
+>> CLUSTER--The core component of Redshift Architecture is the CLSTER.It consists of one or more COMPUTE NODES. and one Leader Node.
+			The more the number of Compute Nodes,the higher is its Processing Power and Storage Capacity.Compute Nodes can be added or removed
+			dynamically to scale up n down the cluster
+>>LEADER NODE It manages Client connections and cordinates Query Execution.
+			  It doesnt store data . It orchestrates query execution among COMPUTE NODES
+			  It parse SQL queries,gnerates Execution Plans,and distributes them among the Compute Nodes.
+>>COMPUTE NODE It is where the ACTUAL DATA PROCESSING AND STORAGE occurs.
+			   Data is distributed across COMPUTE NODES using REDSHIFT's COLUMNAR STORAGE format.
+			   COMPUTE nodes execute query,FRAGMETS in PARALLEL enabling high-speed processing.
+			   
+			   
+11)BLOCKED QUERY /LONG RUNNING ?---			   
+
+   BLOCKED QUERIES occur when a query is waiting for a resource that is held by another query,causing the first query to be blocked until that 
+   required resource is available.The various reasons for such situation are as follows-->
+   
+   1>>Locks--When one query holds a lock on a resource that another query needs,then that 2nd query is blocked until the lock is released.exclusive lock,
+      shared lock, access lock
+   2>>concurency--Redshift has concurrency limit,If this limit is reached then the query is blocked until resource becames available.	  
+   3>>Resource Contention--This can happen if one query is consuming significant resource space causing other queries to be qued or blocked.
+   
+   
+12)BACKUP AND RECOVERY PLANS AND STRATEGY ??  
+
+SNAPSHOTS---
+REDSHIFT takes incremental snapshots of our data at a reguler interval(8 hrs).These SNAPSHOTs capture the entire cluster state,including data,
+schema and config settings.Snapshots are stored in s3 and are retained according to the retention peropd(defailt is 1 day ,configurable upto 35 dys)
+Snapshots can be also manually created to capture a point-in-time backup of the cluster helpful for disaster recovery purpose.
+
+CROSS-REGION REPLICATION -----
+REDSHIFT allow us to replicate the snapshots across different AWS regions for data durability and and disaster recovery.
+
+CLUSTER RESTORATION---
+We can restore an entire cluster from a snapshot creatinga new cluster with the same data and configuration as the original cluster at the time 
+of the snapshot.
+
+13) COPY /UNLOAD COMMAND ?---------------
+
+COPY command is used to LOAD(IMPORT) Data  into Redshift &
+UNLOAD command is used to UNLOAD(EXPORT) Data from redshift.
+
+COPY schema.Rdtable
+FROM 'Path'
+iam_role ' '
+FORMAT AS PARQUET
+
+
+UNLOAD (select * from venue_table')
+TO 's3 path'
+iam_role ' '
+
+14) ENCODING TECHNIQUE IN REDSHIFT ?------
+
+Encoding technique in Redshift COMPRESSES the size of COLUMN DATA to reduce the size of data and improve Query performance.
+RLE--(RUN LENGTH ENCODING) Efficient for columns with REPEATING VALUES
+DICTIONARY ENCODING---Good for columns with LIMITED SET OF VALUES
+DELTA ENCODING--useful for sorted columns with incrementally increasing valuesS
+

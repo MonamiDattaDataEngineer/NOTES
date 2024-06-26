@@ -1,0 +1,74 @@
+project------>model
+
+
+model--- sql statement
+insteAd of from , ref and then model name is used>>on runnig the final(consumption layer model )all the depndant models automatically run prior to it.
+in PROJECT.yaml file,all the models are by default materialized as view>>we can rePLace view with table in materialisation key
+in PROFILE.yaml,IN TERMS OF SCHEMA PLACEMENT,THE DEFAULT TRAGET SCHEMA IS MENTIONED----all models are writen as in PROCESSING LAYER>>to change one of 
+them  to CONSUMPTION LAYER , macros to be written and dbt run command forfinal CONSUMPTION LAYER TO BE EXECTUTED
+normally tables are created as transient IN snowflake by ddefault>>>this can be changed by adding config linetransient :false in dbt project.yaml file.
+In data ineage tab,we can see the relation between the tables and views
+We build reusable dbt models and conncetd them together with 'ref' to build a scalable data pieline
+
+
+SEEDS AND ANALYSE AND SOURCE------------
+ANALYSE--
+this is the sql statement just like the models but the differnece here is they are not materialized and hence are not stored in data warehouse.
+Used for Querying purposes and analysis.
+
+SOURCES----
+Suppose In model there is hardcoded or direct refernces to the table name or schema name,and the data governance team wants to change the name 
+of the base table.
+Its a tedious wrk as especially if these tables are being used in multiple models. DBT SOURCES address the proble
+Create a seperate yaml file in models folder
+
+SEEDS---
+
+Sppose business team sent you the sales target file in csv format and Bi team needs to compare actual sales and target sales.It is not present
+in data warehouse.By using DBT SEEDS feature we can import the csv file.Then target sale data stored in seeds folder can be compared with actual sales
+by using sql query to compare.
+
+
+
+
+
+dbt TESTS--------Types---- 1)SINGULER  2)GENERIC
+Plays vital role in data quality maintaining Data accuracy and data.
+
+SINGULER---One of the simplest way to define a Test is to write a sql query that identifies the Failed records
+           Suppose bunisess requiremnt is orderdate<=ship date----sql----select * from order_table where order_date>ship_date
+		   Since they are created to SERVE A SINGLE MODEL---HENCE called Singuler Tests
+2)GENERIC---
+            sUPPOSE WE have to check the empty string check from multiple tables with multipe columns,we dont need to repeat the query.
+            Instead: we parameterize it using the following--->>>
+ string_not_empty.sql
+{ % test_string_not_empty(model,column_name) %} 
+ SELECT {{ column_name}}
+   FROM {{model}}
+   WHERE TRIM{{{ column_name}}} = ''
+   {% endtest %}
+   
+   Create generic test with this syntax under Tests
+   create yaml file under model changing name of the model and name of the column
+   For built-in generic tests we dot need to change or apply any test code...we can directly write in yaml file
+   here in the terminal run dbt tests column(suppose in yaml file we gave 7 test model,dbt test command will run all 7 tests)
+   
+   
+ DBT developers use 3 languages-----sql for creating models and tests,  yaml for configuration  and jinja  for making sql and yaml code dynamic for
+                                                                                                    reusability.
+
+JINJA----(refer to dbt_jinja file in Ducument folder)	
+Suppose the record count from bysiness is provided for dfferent tables & we need to compare them wth the actual table count by checking in sql
+Either manually for each tables sql could be written 
+or
+Jinja function written in Generic Test can be run with ---->>>> dbt test	--select record_count_check      
+                                                                         (	where record_count_check.sql is the generic test fle)				
+BEYOND TESTING--JINJA can generate dynamic sql for dbt model
+
+
+MACROS-----------------
+
+
+
+
+       		   

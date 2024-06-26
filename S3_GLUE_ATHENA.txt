@@ -1,0 +1,87 @@
+SIMPPLE STORAGE SERVICE (S3)----------------------------------
+
+
+What is s3?-----------------------------
+
+S3 is a flexible storage service which can store various types of data.It follows the key-value approach to store the objects in it.
+Objects are replicated in SINGLE REGION OVER MULTIPLE AVAILABILITY ZONES
+
+What is Storage class??-----------
+
+STORAGE CLASS----Depending of various USE CASES AND ACCESS PATTERNS,AMAZON S3 has different STORAGE CLASS for cost optomization.
+                 S3 STORAGE CLASS is used to optimize the COST as well as meeting the ACCESS TIME NEEDS.
+1)STANDARD -- Frequently used Data
+              Low Latency and High thouroughput
+			  
+2)STANDARD IA---Long lived Infrequently accessed data
+                Less costly than STANDARD but with high retrieval fee.
+
+3)ONE ZONE IA---Long lived,Infrequntly accesed data,non critical data with replication in One AZ
+                Lest costly than STANDARD IA---Long
+
+4)INTELLIGENT TIERING ----Long lived data with unpredictable ACCESS PATTERN
+                          Automatically Moving Objects between two ACCESS TIERS(Frequent & Infrequent) depending on the changing ACCESS PATTERNS
+						  making Automatic Cost Optimization.
+
+5)GLACIER----Long time Archived the historical data with retrieval time of minutes to hours
+             Very low cost storage design
+
+6)GLACIER DEEP ARCHIVE ---Long term archive with retrieval time upto 12 hrs
+                          Lowest cost storage class for rarely accessed data.
+
+
+
+What is LIFECYCLE CONFIGURATION ? -----------------
+
+The S3 LIFECYCLE CONFIGURATION is a set of policies which manages the Objects throughout their Lifecycles automatically transitioning 
+betwenn different STORAGE CLASSES or EXPIRING them optomizing the cost.
+
+
+
+ACL AND IAM OF S3 ? --------------------------
+
+S3 ACL(ACCESS CONTROL LIST) enables us to access the buckets and objects of S3.
+Each bucket or object has an ACL attached to it which defines which accounts or groups have access to it.
+When a request is received ,s3 first checks  the corresponding ACl to verify that the requester has the ACCESS PERMISION
+
+
+IAM is a service that provides a centralized control over the users and permissions across all aws services
+ACL are used to control access to buckets and objects 
+
+IAM allows you to create AWS users or groups and grant permissions using IAM policies
+ACL defines which AWS accounts or pre defined groups have aceess to a bucket or object
+
+
+
+----------------------------------------X--------------X--------------X------------------------------
+
+
+DATA CATALOGUE---------
+
+DATA CATALOGUE is a central repositiory that stores all the structured and non structured data.
+DATA CATALOGUE automatically INDEXES your data,COLLECTS and STORES metadata, and makes the data readily SEARCHABLE and QUERIABLE by Athena,
+Redshift Spectrum and Glue.
+
+
+GLUE CRAWLER-----------
+
+GLUE CRAWLER is a service that connects to the data soursce,determines the schema and create metadata tables in the GLUE CATALOGUE.
+It can crawl multiple datastores in a single run and automatically handles new data that gets added to the data stores.
+
+
+GLUE CRAWLER is the tool that discovers and catalogues the metadata from data store
+GLUE CATALOGUE is where the metadata of the data is stored and managed.
+
+
+
+GLUE,Lambda-----serverless platform where python,pyspark,java codes,etc could be executed
+
+
+Athena---diectly query from s3
+
+
+EC2---Instance(computer)
+EMR----(cluster of instances)
+
+databases----Redshift,Dynamodb,Mongodb,Auroradb
+						  

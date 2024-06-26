@@ -1,0 +1,164 @@
+FACT TABLE &  DIMENSION TABLE----------
+
+FACTS are measurments and dimensions which on itself doesnt hold much of a meaning but when we  join them with the DIMENSION table we get 
+context to those values.
+@ Contains MEASUREMENTS,FACTS & METRICS  of the attributes.
+@ Holds no meaning in itself
+@ NUMERIC and QUANTIFIABLE
+@ CREATED and LOADED after DIMENSIONS are loaded
+@ Usually a DB schema has LESS FACT TABLES and MORE DIMENSION TBLS 
+@ DIMENSION TABLES have unique identifier PRIMARY KEY columns referenced in the FACT TABLE.
+
+DIMENSION TABLE>>
+@ GIVE CONTEXT to FACTS , HOLDS ATRRIBUTES to FACTS
+
+FACT>>>> CX_ID , TXN_DT , QTY , AMT
+DIMENSION>>> CUSTOMER TABLE(NAME,ID,ADDRESS,CONTACT_NUM)   ,   PRODUCTS TABLE( Procutcs name, products id, PRODUCT DESCRIPTION)
+
+
+
+PRIMARY KEY---------------
+
+IT is a unique identifir of a table.
+This column holds unique values.
+It doesnt have any NULL value or Duplicate values.
+
+FOREGN KEY---------------
+
+Its a database column that holds LINK BETWEEN TWO TABLES.
+Foreign key in one table holds references to a column(mostly PRIMARY KEY)  of another table.
+
+
+
+
+WAREHOUSE CONCEPTS---------------------------------------------------------
+
+
+DATAwarehouse is a 
+
+SUBJECT-ORIENTED---Stored data targets specific subjects---Eg>> has data regarding CX and Sales and NOT general data on evryday operations.
+INTEGRATED-----Integrates data from various heterogenous sources---Eg>> Sales data from RDB, Cx data in flatfiles
+TIME-VARIANT----Data stored may not be current and varies with time---Eg>> CX data of last 5 years.
+NON_VOLATILE-----It is SEPERATE from Enterpise Operational Database and hence is not subject to frequent modification of data.
+
+collection of data in support of Business analysis.
+
+
+OLAP AND OLTP ------------
+
+
+OLTP--- This db is used in transaction oriented applicatins such as operational systems.
+OLTP--Handles routine day-to-day operations of a business,such as order entry,fin.txn
+OLTP---Short simple and frequent transactions.
+OLTP--Manages Large Volumes of Small Transactions.
+OLTP--Data Structure is Highly NORMALISED to reduce Redundancy and improve data Integrity
+Eg>>Banking sys,Ecommerce websites,Reservatn sys--AURORADB,DYNAMODB
+
+
+OLAP---This db is optimized for read only queries in most cases
+OLAP--Supports complex queries and analysis for business Intelligence purpose
+OLAP--Queries are Complex,generally involving large Volumes of data and multiple dimentions
+OLAP---Denormalised structure of data often structured as Star and snwflake schema for quich data retrieval
+OLAP--Optimized for read-heavy operations and large datasets.
+OLAP--EG--DATA WAREHOUSE,BUSINESS INTELLIGENCE TOOLS,REDSHIFT,SNOWFLAKES
+
+OLTP is designed for HIGHSPEED,HIGH VOLUME TRANSACTION PROCESSING
+OLAP is for complex DATA ANAYSIS 
+
+
+
+events,trigger,dimension,measures,packges,functions,data import,role based,
+complex functions---windows,partition
+datamart,datamine
+measures,dimension
+
+events,trigger,dimension,measures,packges,functions,data import,role based,
+complex functions---windows,partition
+datamart,datamine
+
+
+datamart stru types
+datamart mngmnt
+datamart is subset of datawarehouse
+type of measures,tpe of dimensions
+factless fact table---types
+data model types
+optimisation
+null include
+ 
+>>>>>>>>>>
+DIMENSION----DIMENSIONS ARE THE INFORMATION ABOUT THE MEASURES THAT CAN COMPREHEND OR INDEX THE MEASURES IN A DATA MODEL
+             DIMENSIONS ARE THE CHARACTERISTICS OF THE MEASURES
+			 EG---COLOR OF THE HAT  , NAME OF THE COMPANY , NAME OF THE EMPLOYEE ,CX ID
+
+MEASURES---- MEASURES ARE THE NUMERICAL ATTRIBUTE OF THE DATA.THESE ARE THE FIELDS IN THE DATABASE WHICH CAN BE CALCULATED OR AGGREGATED.
+			 EG--PRICE OF THE HAT, DATE OF PURCHASE ,QTY OF HAT SOLD
+			 
+			 
+>>>>			 
+			 
+SURROGATE KEY---SUPPOSE A TABLE HAS AN EMPLOYEE RECORD WITH COUNTRY NAME INDIA
+                FEW DAYS AFTER THE NEW RECORD IS ENTERED WHERE SAME EMPLOYEE RECORD IS INSERTED BUT THE ADRESS CHANGED TO USA--------NOW TO IDENTIFY
+				WE USE SURROGATE KEY HERE
+PK ----IT IS THE UNIQUE IDENTIFIER OF A TABLE. NO DUPLICATE RECORDS . NO NULL RECORDS	
+
+
+>>>>>>>>>
+DATAWAREHOUSE ---IT HAS DATA FROM MULTIPLE BUSINESS UNITS AND ITS CENTRALIZED AND INTEGRATEd...entire ENTERPRISE DATA	
+DATAMART---IT IS THE SUBSET OF THE DATAWAREHOUSE . HAS SINGLE SUBJECT FOCUS . ARE DECENTRALIZED.....SALES DATA OR DATA ABOUT A PARTICULER PRODUCT
+
+
+>>>>>>>>				
+EVENTS/TRIGGERS ----BOTH OF THEM ARE USED FOR AUTOMATING SQL QUERIES
+
+EVENT IS A TASK THAT RUNS ACCORDING TO A SCHEDULE
+AT---EXECUTE AT SPECIFIC TIME
+EVERY---EXEC REPEATEDLY AT AN INTERVAL
+
+CREATE EVENT event_name 
+ON SCHEDULE EVERY 1 DAY
+DO
+ DELETE FROM logs WHERE log_date <NOW() - INTERVAL 30 DAY;
+ END;
+
+TRIGGER helps to EXECUTE the SQL QUERIES WHEN CERTAIN EVENTS OCCUR ON A TABLE OR A VIEW
+
+BEFORE---EXECUTE BEFORE INSERT,UPDATE DELETE
+CREATE TRIGGER trigger_name
+BEFORE INSERT
+ON TABLE table_name
+FOR EACH ROW
+WHEN(CONDITION)
+BEGIN
+---SQL
+END
+AFTER---
+INSTEAD----USED ON VIEWS TO EXECUTE SPECIFIED STATEMENTS INSTEAD OF INSERT ,UPDATE OR DELETE
+
+
+
+>>>>>>>>>>>STAR AND SNOWFLAKE SCHEMA
+STAR SCHEMA----IT IS THE SIMPLEST METHOD OF ARRANGING DATA IN A DW. IT CONSISTS OF A FACT TABLE IN THE CENTRE CONNECTED TO DIMENSION TABLES AROUND IT.
+               MOST EFFECTIVE FOR QUICK AND SIMPLE DATA QUERY.GOOD FOR DATAMARTS
+			   LESSER NUMNER OF JOINS
+			   
+			   
+
+SNOWFLAKE SCHEMA ---IT IS THE COMPLEX METHOD OF STORING DATA IN WHICH  DIMENSION TABLES ARE FURTHER CONNECTIONED WITH SUB DIMENSIONAL TABLES.
+                    HIGHLY NORMALISED STRUCT.GOOD FOR DATA WAREHOUSE			   
+			        REDUCE REDUNDANCY
+					PREFERED WHEN DATA REDUNDANCY NEEDS TO BE MINIMIZED AND STORAGE EFFICIENCY IS PRIORITIZED
+					
+					
+					
+					
+					
+CALCULATED FIELD ------A CALCULATED FIELD IS DERIVED FROM OTHER FIELDS IN A DATABASE THAT ALLOWS CALCULATIONS OR AGGREGATIONS OR STRING MANUPULATION
+                       WITHOUT ACTUALLY STORING THE DATA  IN THE SEPERATE COLUMN IN THE TABLE		
+
+                      NAME, QTY ,UNIT PRICE  >>> WE CAN HAVE A CALCULATED FIELD AS TOTAL_SALES
+                      SELECT NAME, QTY, UNIT_PRICE , (QTY*UNIT_PRICE) AS TOTAL SALES FROM TABLE
+
+BENEFITS---
+1)REALTIME CALCULATIONS WITHOUT NEED TO STORE RESULTS IN DB. >>STORAGE EFFICINY AND BEING CURRENY DATA REDUCE RISK OF DATA COMPETENCIES
+2)FLEXIBILITY IN DATA MANUPULATION ALOWING TO CHANGE THE LOGIC	WITHOUT ALTERING SCHEMA				  
